@@ -4,8 +4,7 @@ pipeline {
 	environment{
 
 		dockerHome= tool 'myDocker'
-		mavenHome= tool 'myMaven'
-		PATH= '$dockerHome/bin:$mavenHome/bin:$PATH'
+ 		PATH= '$dockerHome/bin:$PATH'
 	}
 
 	stages{
@@ -13,34 +12,49 @@ pipeline {
 
 		stage('Checkout') {	
 			steps {
-				echo "Build"
-				sh 'mvn --version'
+ 
 				echo "Build"
 				sh 'docker version'
 			}
 		}
-
-		stage('Compile') {
-			steps {
-				echo "TeBuildst"
-				sh "mvn clean compile"
-			}
-		}
-
+ 
 		stage('Test') {
 			steps {
 				echo "Test"
-				sh "mvn test"
+				 
 			}
 		}
 
 
-		stage('Integreation Test') {
+ 
+
+
+		stage('build image') {
 			steps {
-				echo "Integreation Test"
-				sh "mvn failsafe:integration-test failsafe:verify"
+				echo "build image"
+			//	docker build -t khaledkhaled/currency:$env.BUILD_TAG 
+				script{
+					dockerimage =	docker.build("khaledkhaled/currency:${env.BUILD_TAG}")
+
+				}
+
+				 
 			}
 		}
+
+		stage('Push image') {
+			steps {
+				echo "build image"
+			  	script{
+					docker.withRegistry('','dockerhub') {
+					dockerimage.Push();
+					dockerimage.Push('latest');
+				}	}
+				 
+			}
+		}		
+
+ 
 }
     post {
 		always {
