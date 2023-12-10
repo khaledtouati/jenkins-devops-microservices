@@ -1,7 +1,7 @@
 pipeline {
 	agent any
 
-	environement{
+	environment{
 
 		dockerHome= tool 'myDocker'
 		mavenHome= tool 'myMaven'
