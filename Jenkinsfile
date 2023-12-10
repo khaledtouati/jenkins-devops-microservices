@@ -11,7 +11,7 @@ pipeline {
 	stages{
 
 
-		stage('Build') {	
+		stage('Checkout') {	
 			steps {
 				echo "Build"
 				sh 'mvn --version'
@@ -20,10 +20,17 @@ pipeline {
 			}
 		}
 
+		stage('Compile') {
+			steps {
+				echo "TeBuildst"
+				sh "mvn clean compile"
+			}
+		}
 
 		stage('Test') {
 			steps {
 				echo "Test"
+				sh "mvn test"
 			}
 		}
 
@@ -31,6 +38,7 @@ pipeline {
 		stage('Integreation Test') {
 			steps {
 				echo "Integreation Test"
+				sh "mvn failsafe:integration-test failsafe:verify"
 			}
 		}
 }
